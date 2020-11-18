@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HdQuiz</title>
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+    ระบุคำค้นหา <textarea cols="100" rows="1" id="text" type="text"></textarea>  <button onclick="add()" class="btn btn-warning">ค้นหา</button>
+    <div class="container" id="spotify"></div>
+    
+
+    <script>
+      let requestURL = "ezquiz.json";
+      let request = new XMLHttpRequest();
+      request.onreadystatechange = function () {
+        if (request.readyState == 4 && request.status == 200) {
+          dataReportStatus(JSON.parse(request.responseText));
+        }
+      };
+      request.open("GET", requestURL, true);
+      request.send();
+
+      function dataReportStatus(data) {
+        var dis = document.getElementById("spotify");
+        for(i=0 ; i<data.tracks.items.length ;){
+          var row = document.createElement("div");
+          row.setAttribute("class","row");
+          for(j=0 ; j<3 && i<data.tracks.items.length ;j++,i++){
+            var image = document.createElement("div");
+            image.setAttribute("class","col-4");
+            var song = document.createElement("img");
+            song.setAttribute("src",data.tracks.items[i].album.images[1].url);
+            image.appendChild(song);
+            var info = document.createElement("p");
+            info.innerHTML = "<br><b>"+data.tracks.items[i].album.song+"</b><br>Artist: "+data.tracks.items[i].album.artists[0].name+"</b><br>Release date: "+
+                            data.tracks.items[i].album.release_date+"</b><br>Avaliable: "+data.tracks.items[i].album.available_markets.length+" countries";
+            image.appendChild(info);
+            row.appendChild(image);
+          }
+          dis.appendChild(row);
+        }
+      }
+    </script>
+</body>
+</html>
